@@ -27,6 +27,11 @@ def about():
     """Render the website's about page."""
     return render_template('about.html')
 
+@app.route('/secure-page')
+@login_required
+def secure_page():
+    return render_template('secure_page.html')
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -38,18 +43,18 @@ def login():
             # Get the username and password values from the form.
             username = form.username.data
             password = form.password.data
-            user = UserProfile.query.filter_by(username=username,password=password).first()
+            user = UserProfile.query.filter_by(username=username).first()
 
             # using your model, query database for a user based on the username
             # and password submitted. Remember you need to compare the password hash.
             # You will need to import the appropriate function to do so.
             # Then store the result of that query to a `user` variable so it can be
             # passed to the login_user() method below.
-            if check_password_hash(user.password,password):
+            if user is not None and check_password_hash(user.password,password):
 
 
             # get user id, load into session
-                id = form.id.data
+                #id = form.id.data
                 login_user(user)
                 flash('Logged in successfully.', 'success')
 
